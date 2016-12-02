@@ -1,0 +1,54 @@
+---
+- name: Delete old SSH Keys
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  vars_files:
+    - answerfile.yml
+  tasks:
+    - name: Remove previous SSH keys from known_hosts
+      command: 'ssh-keygen -R "{{ item.value.ipAddress }}"'
+      register: command_result
+      failed_when: "command_result.rc > 0 and command_result.rc != 255"
+      with_dict: "{{nodes}}"
+  tags: clean_old_keys
+
+- name: Prepare ESXi installer ISO
+  hosts: localhost
+  gather_facts: True
+  vars_files:
+    - answerfile.yml
+  tasks:
+    - name: Ensure xorriso is intalled
+      package:
+        name: xorriso
+        state: present
+    - name: Mount ESXi installer
+      action: mount name='/mnt/ESX' src="{{ esxIso }}" opts=loop fstype=iso9660 state=mounted
+    - name: Copy ISO files
+      copy: src=/mnt/ESX dest=/tmp/
+    - name: Unmount ESXi installer
+      action: mount name='/mnt/ESX' src="{{ esxIso }}" fstype=iso9660 state=absent
+    - name: Edit boot.cfg
+      replace:
+        dest: /tmp/ESX/boot.cfg
+        regexp: 'kernelopt=runweasel'
+        replace: 'kernelopt=ks=file://etc/vmware/weasel/KS.CFG'
+    - name: insert customks.tgz in boot.cfg modules section
+      replace:
+        dest: /tmp/ESX/boot.cfg
+        regexp: 'imgpayld.tgz$'
+        replace: 'imgpayld.tgz --- /customks.tgz'
+    - name: copy customks.tgz
+      copy: src=files/customks.tgz dest=/tmp/ESX/
+    - name: Burn an ISO image
+      command: xorrisofs -relaxed-filenames -J -R -o /tmp/customesxv.iso -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table /tmp/ESX/
+      args:
+        chdir: /tmp/ESX/
+    - name: Upload the ISO to the Datastore
+      vsphere_copy: host="{{ vcenter.ip }}" login="{{ vcenter.user }}" password="{{ vcenter.password }}" src=/tmp/customesxv.iso datacenter="{{ vcenter.datacenter }}" datastore="{{ vcenter.datastore }}" path=/yasenISO/customesxv.iso validate_certs=False
+      tags: upload
+    - name: Delete Temporary Directory
+      file:
+        path: /tmp/ESX/
+        state: absent
