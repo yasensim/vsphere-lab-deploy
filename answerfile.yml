@@ -3,9 +3,9 @@ vcIso: '/root/ISOs/VMware-VCSA-all-6.0.0.U2-3634788.iso'
 
 
 physicalESX:
-  host: '10.29.12.196' 
+  host: '10.29.14.164' 
   user: 'root' 
-  password: 'VMware1!' 
+  password: 'VMware1!yasen' 
 
 vcenter:
   ip: '10.29.14.165' 
@@ -17,10 +17,27 @@ vcenter:
   thin: 'true'
   user: 'administrator@vsphere.local' 
   password: 'VMware1!' 
-  datacenter: 'OpenShift' 
-  datastore: 'Datastore-10'
+  datacenter: 'DBGDC1' 
+  datastore: 'Datastore2-SRV180697'
   domain: 'vsphere.local'
 
 dns1: '10.29.14.196'
 dns2: '8.8.8.8'
+
+vESX:
+  esx1:
+    cluster: 'Management'
+    portgroup: 'AllVlans'
+    cpu: 2
+    ram: 16384
+    hdd: 40
+    isopath: 'yasenISO/customesxv.iso'
+  esx2:
+    cluster: 'Management'
+    portgroup: 'AllVlans'
+    cpu: 2
+    ram: 16384
+    hdd: 40
+    isopath: 'yasenISO/customesxv.iso'
+
 
