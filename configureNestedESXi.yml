@@ -1,0 +1,146 @@
+---
+- name: Configure vESX
+  hosts: localhost
+  gather_facts: False
+  vars_files:
+    - answerfile.yml
+  tasks:
+    - name: Change vESXi hostnames
+      vmware_vm_shell:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter: "{{ vcenter.datacenter }}"
+        validate_certs: false
+        vm_id: "{{ item.key }}"
+        vm_username: root
+        vm_password: VMware1!
+        vm_shell: /bin/esxcli
+        vm_shell_args: "system hostname set --fqdn={{ item.key }}.{{ domain }}"
+        vm_shell_env:
+        - "PATH=/bin"
+        - "VAR=test"
+        vm_shell_cwd: "/tmp"
+      with_dict: "{{ vESX }}"
+      async: 7200
+      poll: 0
+      register: hname
+    - name: Result check for configuring hostname
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      with_items: "{{ hname.results }}"
+      retries: 10
+    - name: Set vmk0 ip addresses
+      vmware_vm_shell:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter: "{{ vcenter.datacenter }}"
+        validate_certs: false
+        vm_id: "{{ item.key }}"
+        vm_username: root
+        vm_password: VMware1!
+        vm_shell: /bin/esxcli
+        vm_shell_args: "network ip interface ipv4 set --interface-name=vmk0 --ipv4={{ item.value.ip }} --netmask={{ item.value.mask }} --type=static"
+        vm_shell_env: 
+        - "PATH=/bin"
+        - "VAR=test"
+        vm_shell_cwd: "/tmp"
+      with_dict: "{{ vESX }}"
+      async: 7200
+      poll: 0
+      register: hip
+    - name: Result check for setting vmk0 ip addresses
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      with_items: "{{ hip.results }}"
+      retries: 10
+    - name: Set default gw
+      vmware_vm_shell:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter: "{{ vcenter.datacenter }}"
+        validate_certs: false
+        vm_id: "{{ item.key }}"
+        vm_username: root
+        vm_password: VMware1!
+        vm_shell: /bin/esxcfg-route
+        vm_shell_args: " -a default {{ item.value.gw }}"
+        vm_shell_env: 
+        - "PATH=/bin"
+        - "VAR=test"
+        vm_shell_cwd: "/tmp"
+      with_dict: "{{ vESX }}"
+      async: 7200
+      poll: 0
+      register: hgw
+    - name: Result check for setting default gw
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      with_items: "{{ hgw.results }}"
+      retries: 10
+    - name: Set search domain
+      vmware_vm_shell:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter: "{{ vcenter.datacenter }}"
+        validate_certs: false
+        vm_id: "{{ item.key }}"
+        vm_username: root
+        vm_password: VMware1!
+        vm_shell: /bin/esxcli
+        vm_shell_args: "network ip dns search add --domain={{ domain}}"
+        vm_shell_env: 
+        - "PATH=/bin"
+        - "VAR=test"
+        vm_shell_cwd: "/tmp"
+      with_dict: "{{ vESX }}"
+      async: 7200
+      poll: 0
+      register: hsd
+    - name: Result check for setting a search domain
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      with_items: "{{ hsd.results }}"
+      retries: 10
+    - name: Set a DNS Server
+      vmware_vm_shell:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter: "{{ vcenter.datacenter }}"
+        validate_certs: false
+        vm_id: "{{ item.key }}"
+        vm_username: root
+        vm_password: VMware1!
+        vm_shell: /bin/esxcli
+        vm_shell_args: "network ip dns server add --server={{ dns1 }}"
+        vm_shell_env: 
+        - "PATH=/bin"
+        - "VAR=test"
+        vm_shell_cwd: "/tmp"
+      with_dict: "{{ vESX }}"
+      async: 7200
+      poll: 0
+      register: hdns
+    - name: Result check for setting a DNS Server
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      with_items: "{{ hdns.results }}"
+      retries: 10
+
+
+
+

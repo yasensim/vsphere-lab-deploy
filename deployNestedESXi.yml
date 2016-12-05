@@ -1,5 +1,5 @@
 ---
-- name: Deploy and Configure Nested vESX VMs
+- name: Deploy Nested vESX VMs
   hosts: localhost
   gather_facts: False
   vars_files:
@@ -17,13 +17,13 @@
         cpucount: "{{ item.value.cpu }}"
         memory: "{{ item.value.ram }}"
         hdd: "{{ item.value.hdd }}"
-        isopath: "{{ item.value.isopath }}"
+        isopath: "yasenISO/customesxv.iso"
       with_dict: "{{ vESX }}"
       async: 7200
       poll: 0
       register: deployment
-    - name: Wait 5 minutes before start checking wheter the hosts are ready
-      pause: minutes=5
+    - name: Wait 8 minutes before start checking wheter the hosts are ready
+      pause: minutes=8
     - name: Result check for second deployment
       async_status:
         jid: "{{ item.ansible_job_id }}"

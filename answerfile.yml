@@ -23,21 +23,26 @@ vcenter:
 
 dns1: '10.29.14.196'
 dns2: '8.8.8.8'
+domain: 'vmlab.com'
 
 vESX:
   esx1:
+    ip: 10.10.10.1
+    mask: 255.255.255.224
+    gw: 10.10.10.10
     cluster: 'Management'
     portgroup: 'AllVlans'
     cpu: 2
     ram: 16384
     hdd: 40
-    isopath: 'yasenISO/customesxv.iso'
   esx2:
+    ip: 10.10.10.2
+    mask: 255.255.255.224
+    gw: 10.10.10.10
     cluster: 'Management'
     portgroup: 'AllVlans'
     cpu: 2
     ram: 16384
     hdd: 40
-    isopath: 'yasenISO/customesxv.iso'
 
 
