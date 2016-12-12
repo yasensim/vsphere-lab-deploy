@@ -17,6 +17,17 @@ vcenter:
   thin: 'true'
   user: 'administrator@vsphere.local' 
   password: 'VMware1!' 
+  datacenter: 'MyDC' 
+  datastore: 'Datastore2-SRV180697'
+  domain: 'vsphere.local'
+vc_mng:
+  ip: '10.29.14.165' 
+  mask: '27'
+  gw: '10.29.14.161'
+  network: 'Infrastructure'
+  name: '10.29.14.167'
+  user: 'administrator@vsphere.local' 
+  password: 'VMware1!' 
   datacenter: 'DBGDC1' 
   datastore: 'Datastore2-SRV180697'
   domain: 'vsphere.local'
@@ -25,24 +36,41 @@ dns1: '10.29.14.196'
 dns2: '8.8.8.8'
 domain: 'vmlab.com'
 
+clusters:
+  Management:
+    ha: True
+    drs: True
+    vsan: False
+  Edge:
+    ha: True
+    drs: True
+    vsan: False
+  Compute:
+    ha: True
+    drs: True
+    vsan: False
+
+
+
 vESX:
   esx1:
-    ip: 10.10.10.1
+    ip: 10.29.14.168
     mask: 255.255.255.224
-    gw: 10.10.10.10
-    cluster: 'Management'
+    gw: 10.29.14.161
+    mng_cluster: 'Management'
+    cluster: Compute
     portgroup: 'AllVlans'
     cpu: 2
     ram: 16384
     hdd: 40
   esx2:
-    ip: 10.10.10.2
+    ip: 10.29.14.169
     mask: 255.255.255.224
-    gw: 10.10.10.10
-    cluster: 'Management'
+    gw: 10.29.14.161
+    mng_cluster: 'Management'
+    cluster: Compute
     portgroup: 'AllVlans'
     cpu: 2
     ram: 16384
     hdd: 40
-
 

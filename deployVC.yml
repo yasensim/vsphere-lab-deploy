@@ -22,4 +22,28 @@
       action: mount name='/mnt/VCSA' src="{{ esxIso }}" fstype=iso9660 state=absent
     - name: Delete the temporary JSON template file
       file: path=/tmp/vCSA_on_ESXi.json state=absent
+    - name: Create Datacenter
+      vmware_datacenter:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter_name: "{{ vcenter.datacenter }}"
+        state: present
+        validate_certs: False
+    - name: Create Clusters
+      vmware_cluster:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter_name: "{{ vcenter.datacenter }}"
+        cluster_name: "{{ item.key }}"
+        validate_certs: False
+        enable_ha: "{{ item.value.ha }}"
+        enable_drs: "{{ item.value.drs }}"
+        enable_vsan: "{{ item.value.vsan }}"
+      with_dict: "{{ clusters }}"
+
+
+
+
 

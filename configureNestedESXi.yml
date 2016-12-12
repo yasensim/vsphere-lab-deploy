@@ -7,10 +7,10 @@
   tasks:
     - name: Change vESXi hostnames
       vmware_vm_shell:
-        hostname: "{{ vcenter.ip }}"
-        username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password }}"
-        datacenter: "{{ vcenter.datacenter }}"
+        hostname: "{{ vc_mng.ip }}"
+        username: "{{ vc_mng.user }}"
+        password: "{{ vc_mng.password }}"
+        datacenter: "{{ vc_mng.datacenter }}"
         validate_certs: false
         vm_id: "{{ item.key }}"
         vm_username: root
@@ -34,10 +34,10 @@
       retries: 10
     - name: Set vmk0 ip addresses
       vmware_vm_shell:
-        hostname: "{{ vcenter.ip }}"
-        username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password }}"
-        datacenter: "{{ vcenter.datacenter }}"
+        hostname: "{{ vc_mng.ip }}"
+        username: "{{ vc_mng.user }}"
+        password: "{{ vc_mng.password }}"
+        datacenter: "{{ vc_mng.datacenter }}"
         validate_certs: false
         vm_id: "{{ item.key }}"
         vm_username: root
@@ -61,10 +61,10 @@
       retries: 10
     - name: Set default gw
       vmware_vm_shell:
-        hostname: "{{ vcenter.ip }}"
-        username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password }}"
-        datacenter: "{{ vcenter.datacenter }}"
+        hostname: "{{ vc_mng.ip }}"
+        username: "{{ vc_mng.user }}"
+        password: "{{ vc_mng.password }}"
+        datacenter: "{{ vc_mng.datacenter }}"
         validate_certs: false
         vm_id: "{{ item.key }}"
         vm_username: root
@@ -88,10 +88,10 @@
       retries: 10
     - name: Set search domain
       vmware_vm_shell:
-        hostname: "{{ vcenter.ip }}"
-        username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password }}"
-        datacenter: "{{ vcenter.datacenter }}"
+        hostname: "{{ vc_mng.ip }}"
+        username: "{{ vc_mng.user }}"
+        password: "{{ vc_mng.password }}"
+        datacenter: "{{ vc_mng.datacenter }}"
         validate_certs: false
         vm_id: "{{ item.key }}"
         vm_username: root
@@ -115,10 +115,10 @@
       retries: 10
     - name: Set a DNS Server
       vmware_vm_shell:
-        hostname: "{{ vcenter.ip }}"
-        username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password }}"
-        datacenter: "{{ vcenter.datacenter }}"
+        hostname: "{{ vc_mng.ip }}"
+        username: "{{ vc_mng.user }}"
+        password: "{{ vc_mng.password }}"
+        datacenter: "{{ vc_mng.datacenter }}"
         validate_certs: false
         vm_id: "{{ item.key }}"
         vm_username: root
@@ -140,7 +140,17 @@
       until: job_result.finished
       with_items: "{{ hdns.results }}"
       retries: 10
-
-
-
+    - name: Add ESXi Host to VCSA
+      vmware_host:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        datacenter_name: "{{ vcenter.datacenter }}"
+        validate_certs: false
+        cluster_name: "{{ item.value.cluster }}"
+        esxi_hostname: "{{ item.value.ip }}"
+        esxi_username: "root"
+        esxi_password: "VMware1!"
+        state: present
+      with_dict: "{{ vESX }}"
 

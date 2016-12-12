@@ -32,7 +32,7 @@
       args:
         chdir: /tmp/ESX/
     - name: Upload the ISO to the Datastore
-      vsphere_copy: host="{{ vcenter.ip }}" login="{{ vcenter.user }}" password="{{ vcenter.password }}" src=/tmp/customesxv.iso datacenter="{{ vcenter.datacenter }}" datastore="{{ vcenter.datastore }}" path=/yasenISO/customesxv.iso validate_certs=False
+      vsphere_copy: host="{{ vc_mng.ip }}" login="{{ vc_mng.user }}" password="{{ vc_mng.password }}" src=/tmp/customesxv.iso datacenter="{{ vc_mng.datacenter }}" datastore="{{ vc_mng.datastore }}" path=/yasenISO/customesxv.iso validate_certs=False
       tags: upload
     - name: Delete Temporary Directory
       file:
