@@ -190,7 +190,10 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
     dev_changes = []
     disk_size = 1
     new_disk_kb = int(disk_size) * 1024 * 1024 * hdd_size
-    disk_spec = create_virtual_disk(new_disk_kb, 0, 0, False)
+    disk_spec = create_virtual_disk(16777216, 0, 0, False)
+    disk_spec2 = create_virtual_disk(new_disk_kb/2, 0, 1, False)
+    disk_spec3 = create_virtual_disk(new_disk_kb, 0, 2, False)
+
     scsi_spec = add_scsi_controller()
     nic1_spec = createNIC(content, portGroup, True)
     nic2_spec = createNIC(content, portGroup, True)
@@ -198,6 +201,9 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
     dev_changes.append(cdrom)
     dev_changes.append(scsi_spec)
     dev_changes.append(disk_spec)
+    dev_changes.append(disk_spec2)
+    dev_changes.append(disk_spec3)
+
     dev_changes.append(nic1_spec)
     dev_changes.append(nic2_spec)
     config = vim.vm.ConfigSpec(
@@ -211,6 +217,9 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
                               version='vmx-11'
                             ) 
     config.deviceChange = dev_changes
+    ssdOption = vim.option.OptionValue(key='scsi0:1.virtualSSD',value='1')
+    config.extraConfig  = [ssdOption]
+
     task = vmfolder.CreateVM_Task(config=config, pool=resource_pool)
     wait_for_tasks([task])
     vm = get_obj(content, [vim.VirtualMachine], vmName)
@@ -223,6 +232,7 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
 
 
 def main():
+
     module = AnsibleModule(
         argument_spec=dict(
             vmname=dict(required=True, type='str'),

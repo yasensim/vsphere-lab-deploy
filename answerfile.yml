@@ -48,7 +48,7 @@ clusters:
   Compute:
     ha: True
     drs: True
-    vsan: False
+    vsan: True
 
 
 
@@ -65,6 +65,16 @@ vESX:
     hdd: 40
   esx2:
     ip: 10.29.14.169
+    mask: 255.255.255.224
+    gw: 10.29.14.161
+    mng_cluster: 'Management'
+    cluster: Compute
+    portgroup: 'AllVlans'
+    cpu: 2
+    ram: 16384
+    hdd: 40
+  esx3:
+    ip: 10.29.14.170
     mask: 255.255.255.224
     gw: 10.29.14.161
     mng_cluster: 'Management'

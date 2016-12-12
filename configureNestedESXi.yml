@@ -140,6 +140,33 @@
       until: job_result.finished
       with_items: "{{ hdns.results }}"
       retries: 10
+    - name: Enable vSAN on vmk0
+      vmware_vm_shell:
+        hostname: "{{ vc_mng.ip }}"
+        username: "{{ vc_mng.user }}"
+        password: "{{ vc_mng.password }}"
+        datacenter: "{{ vc_mng.datacenter }}"
+        validate_certs: false
+        vm_id: "{{ item.key }}"
+        vm_username: root
+        vm_password: VMware1!
+        vm_shell: /bin/esxcli
+        vm_shell_args: "vsan network ipv4 add -i vmk0"
+        vm_shell_env: 
+        - "PATH=/bin"
+        - "VAR=test"
+        vm_shell_cwd: "/tmp"
+      with_dict: "{{ vESX }}"
+      async: 7200
+      poll: 0
+      register: hvsan
+    - name: Result check for enabling vSAN on vmk0
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      with_items: "{{ hvsan.results }}"
+      retries: 10
     - name: Add ESXi Host to VCSA
       vmware_host:
         hostname: "{{ vcenter.ip }}"
