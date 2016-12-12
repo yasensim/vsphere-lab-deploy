@@ -5,13 +5,13 @@
         "appliance": {
             "deployment.network": "{{ vcenter.network }}",
             "deployment.option": "{{ vcenter.deployment }}",
-            "name": "{{vcenter.name }}",
-            "thin.disk.mode": "{{ vcenter.thin}}"
+            "name": "{{ vcenter.name }}",
+            "thin.disk.mode": "{{ vcenter.thin }}"
         },
         "esx": {
-            "hostname": "{{ pESX.ip }}",
-            "username": "{{ pESX.user }}",
-            "password": "{{ pESX.password }}",
+            "hostname": "{{ physicalESX.host }}",
+            "username": "{{ physicalESX.user }}",
+            "password": "{{ physicalESX.password }}",
             "datastore": "{{ vcenter.datastore }}"
         },
         "network": {

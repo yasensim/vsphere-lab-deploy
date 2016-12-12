@@ -1,0 +1,25 @@
+---
+- name: Deploy VC
+  hosts: localhost
+  gather_facts: False
+  vars_files:
+    - answerfile.yml
+  tasks:
+    - name: Create JSON template file
+      template: src=vCSA_on_ESXi.json dest=/tmp/vCSA_on_ESXi.json
+      tags: templ
+    - name: Mount VC installer
+      action: mount name='/mnt/VCSA' src="{{ vcIso }}" opts=loop fstype=iso9660 state=mounted
+    - debug:
+        msg: "Next step will take about 20 minutes if VC has not been previously deployed, so go grab some coffee !!!"
+    - name: Perform VC CLI Install
+      deployVC:
+        pESX: "{{ physicalESX.host }}"
+        vmname: "{{ vcenter.name }}"
+        pESX_user: "{{ physicalESX.user }}"
+        pESX_passwd: "{{ physicalESX.password }}"
+    - name: Unmount ESXi installer
+      action: mount name='/mnt/VCSA' src="{{ esxIso }}" fstype=iso9660 state=absent
+    - name: Delete the temporary JSON template file
+      file: path=/tmp/vCSA_on_ESXi.json state=absent
+

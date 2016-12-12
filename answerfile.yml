@@ -8,12 +8,12 @@ physicalESX:
   password: 'VMware1!yasen' 
 
 vcenter:
-  ip: '10.29.14.165' 
+  ip: '10.29.14.167' 
   mask: '27'
   gw: '10.29.14.161'
-  network: 'VLAN307'
+  network: 'Infrastructure'
   deployment: 'small'
-  name: 'VCSA-test'
+  name: '10.29.14.167'
   thin: 'true'
   user: 'administrator@vsphere.local' 
   password: 'VMware1!' 
