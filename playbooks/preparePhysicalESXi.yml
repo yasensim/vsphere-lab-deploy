@@ -16,6 +16,7 @@
         network_policy:
           promiscuous_mode: True
         validate_certs: False
+      when: vcenter.ip  ==  vc_mng.ip
     - name: Create Infrastructure portgroup
       vmware_portgroup:
         hostname: "{{ physicalESX.host }}"
@@ -29,5 +30,5 @@
           forged_transmits: True
           mac_changes: True
         validate_certs: False
-
+      when: vcenter.ip  ==  vc_mng.ip
 

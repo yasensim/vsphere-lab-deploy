@@ -26,7 +26,7 @@
         regexp: 'imgpayld.tgz$'
         replace: 'imgpayld.tgz --- /customks.tgz'
     - name: copy customks.tgz
-      copy: src=files/customks.tgz dest=/tmp/ESX/
+      copy: src=../files/customks.tgz dest=/tmp/ESX/
     - name: Burn an ISO image
       command: xorrisofs -relaxed-filenames -J -R -o /tmp/customesxv.iso -b isolinux.bin -c boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table /tmp/ESX/
       args:

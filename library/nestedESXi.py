@@ -224,10 +224,10 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
     wait_for_tasks([task])
     vm = get_obj(content, [vim.VirtualMachine], vmName)
     invoke_and_track(vm.PowerOn, None)
-    time.sleep(420)
+    time.sleep(600)
     tools_status = vm.guest.toolsStatus
     if (tools_status == 'toolsNotInstalled' or tools_status == 'toolsNotRunning'):
-        time.sleep(90)
+        time.sleep(120)
     return 0
 
 

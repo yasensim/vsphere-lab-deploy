@@ -1,0 +1,18 @@
+---
+- include: playbooks/preparePhysicalESXi.yml
+- include: playbooks/deployVC.yml
+- include: playbooks/connectPESXtoVC.yml
+- include: playbooks/prepareISOInstaller.yml
+- include: playbooks/deployNestedESXi.yml
+
+- name: Wait 5 more minutes the vESXi hosts to become fully responsive
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Wait 5 minutes before start checking wheter the hosts are ready
+      pause: minutes=5
+
+- include: playbooks/configureNestedESXi.yml
+
+
+

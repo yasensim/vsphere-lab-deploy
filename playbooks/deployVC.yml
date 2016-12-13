@@ -6,7 +6,7 @@
     - ../answerfile.yml
   tasks:
     - name: Create JSON template file
-      template: src=vCSA_on_ESXi.json dest=/tmp/vCSA_on_ESXi.json
+      template: src=../templates/vCSA_on_ESXi.json dest=/tmp/vCSA_on_ESXi.json
       tags: templ
     - name: Mount VC installer
       action: mount name='/mnt/VCSA' src="{{ vcIso }}" opts=loop fstype=iso9660 state=mounted

@@ -17,3 +17,4 @@
         esxi_username: "root"
         esxi_password: "{{ physicalESX.password }}"
         state: present
+      when: vcenter.ip  ==  vc_mng.ip

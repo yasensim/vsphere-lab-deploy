@@ -35,8 +35,8 @@
       with_items: "{{ job_result.results }}"
     - stat: path=/tmp/newESXi
       register: newESXi
-    - name: Wait 8 minutes before start checking wheter the hosts are ready
-      pause: minutes=8
+    - name: Wait 15 minutes before start checking wheter the hosts are ready
+      pause: minutes=15
       when: newESXi.stat.exists == True
     - name: Delete the temporary mark
       file: path=/tmp/newESXi state=absent
