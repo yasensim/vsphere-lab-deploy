@@ -195,8 +195,8 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
     disk_spec3 = create_virtual_disk(new_disk_kb, 0, 2, False)
 
     scsi_spec = add_scsi_controller()
-    nic1_spec = createNIC(content, portGroup, True)
-    nic2_spec = createNIC(content, portGroup, True)
+    nic1_spec = createNIC(content, portGroup, False)
+    nic2_spec = createNIC(content, portGroup, False)
     cdrom = createCdrom(content, datastore, dataStorePath)
     dev_changes.append(cdrom)
     dev_changes.append(scsi_spec)

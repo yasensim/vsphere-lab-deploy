@@ -3,33 +3,35 @@ vcIso: '/root/ISOs/VMware-VCSA-all-6.0.0.U2-3634788.iso'
 
 
 physicalESX:
-  host: '10.29.14.164' 
+  host: '10.29.15.68' 
   user: 'root' 
   password: 'VMware1!yasen' 
+  vlan: 327
+  vswitch: vSwitch0
 
 vcenter:
-  ip: '10.29.14.167' 
+  ip: '10.29.15.69' 
   mask: '27'
-  gw: '10.29.14.161'
+  gw: '10.29.15.65'
   network: 'Infrastructure'
   deployment: 'small'
-  name: '10.29.14.167'
+  name: '10.29.15.69'
   thin: 'true'
   user: 'administrator@vsphere.local' 
   password: 'VMware1!' 
-  datacenter: 'MyDC' 
-  datastore: 'Datastore2-SRV180697'
+  datacenter: 'MyDC1' 
+  datastore: 'Datastore1'
   domain: 'vsphere.local'
 vc_mng:
-  ip: '10.29.14.165' 
+  ip: '10.29.15.69' 
   mask: '27'
-  gw: '10.29.14.161'
+  gw: '10.29.15.69'
   network: 'Infrastructure'
-  name: '10.29.14.167'
+  name: '10.29.15.69'
   user: 'administrator@vsphere.local' 
   password: 'VMware1!' 
-  datacenter: 'DBGDC1' 
-  datastore: 'Datastore2-SRV180697'
+  datacenter: 'DC1' 
+  datastore: 'Datastore1'
   domain: 'vsphere.local'
 
 dns1: '10.29.14.196'
@@ -38,13 +40,13 @@ domain: 'vmlab.com'
 
 clusters:
   Management:
-    ha: True
-    drs: True
+    ha: False
+    drs: False
     vsan: False
   Edge:
     ha: True
     drs: True
-    vsan: False
+    vsan: True
   Compute:
     ha: True
     drs: True
@@ -54,33 +56,64 @@ clusters:
 
 vESX:
   esx1:
-    ip: 10.29.14.168
+    ip: 10.29.15.71
     mask: 255.255.255.224
-    gw: 10.29.14.161
+    gw: 10.29.15.65
     mng_cluster: 'Management'
     cluster: Compute
-    portgroup: 'AllVlans'
+    vlan: 327
     cpu: 2
     ram: 16384
     hdd: 40
   esx2:
-    ip: 10.29.14.169
+    ip: 10.29.15.72
     mask: 255.255.255.224
-    gw: 10.29.14.161
+    gw: 10.29.15.65
     mng_cluster: 'Management'
     cluster: Compute
-    portgroup: 'AllVlans'
+    vlan: 327
     cpu: 2
     ram: 16384
     hdd: 40
   esx3:
-    ip: 10.29.14.170
+    ip: 10.29.15.73
     mask: 255.255.255.224
-    gw: 10.29.14.161
+    gw: 10.29.15.65
     mng_cluster: 'Management'
     cluster: Compute
-    portgroup: 'AllVlans'
+    vlan: 327
+    cpu: 2
+    ram: 16384
+    hdd: 40
+  esx4:
+    ip: 10.29.15.74
+    mask: 255.255.255.224
+    gw: 10.29.15.65
+    mng_cluster: 'Management'
+    cluster: Edge
+    vlan: 327
+    cpu: 2
+    ram: 16384
+    hdd: 40
+  esx5:
+    ip: 10.29.15.75
+    mask: 255.255.255.224
+    gw: 10.29.15.65
+    mng_cluster: 'Management'
+    cluster: Edge
+    vlan: 327
+    cpu: 2
+    ram: 16384
+    hdd: 40
+  esx6:
+    ip: 10.29.15.76
+    mask: 255.255.255.224
+    gw: 10.29.15.65
+    mng_cluster: 'Management'
+    cluster: Edge
+    vlan: 327
     cpu: 2
     ram: 16384
     hdd: 40
 
+ 

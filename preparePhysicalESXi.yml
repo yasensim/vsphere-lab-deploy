@@ -1,0 +1,33 @@
+---
+- name: Prepare Physical ESXi
+  hosts: localhost
+  gather_facts: False
+  vars_files:
+    - answerfile.yml
+  tasks:
+    - name: Create Infrastructure portgroup
+      vmware_portgroup:
+        hostname: "{{ physicalESX.host }}"
+        username: "{{ physicalESX.user }}"
+        password: "{{ physicalESX.password }}"
+        switch_name: "{{ physicalESX.vswitch }}"
+        portgroup_name: "{{ vc_mng.network }}"
+        vlan_id: "{{ physicalESX.vlan }}"
+        network_policy:
+          promiscuous_mode: True
+        validate_certs: False
+    - name: Create Infrastructure portgroup
+      vmware_portgroup:
+        hostname: "{{ physicalESX.host }}"
+        username: "{{ physicalESX.user }}"
+        password: "{{ physicalESX.password }}"
+        switch_name: "{{ physicalESX.vswitch }}"
+        portgroup_name: "AllVlansVSS"
+        vlan_id: 4095
+        network_policy:
+          promiscuous_mode: True
+          forged_transmits: True
+          mac_changes: True
+        validate_certs: False
+
+

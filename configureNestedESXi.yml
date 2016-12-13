@@ -32,6 +32,33 @@
       until: job_result.finished
       with_items: "{{ hname.results }}"
       retries: 10
+    - name: Set VLAN to Management portgroup
+      vmware_vm_shell:
+        hostname: "{{ vc_mng.ip }}"
+        username: "{{ vc_mng.user }}"
+        password: "{{ vc_mng.password }}"
+        datacenter: "{{ vc_mng.datacenter }}"
+        validate_certs: false
+        vm_id: "{{ item.key }}"
+        vm_username: root
+        vm_password: VMware1!
+        vm_shell: /bin/esxcli
+        vm_shell_args: "network vswitch standard portgroup set --portgroup-name='Management Network' --vlan-id={{ item.value.vlan }}"
+        vm_shell_env: 
+        - "PATH=/bin"
+        - "VAR=test"
+        vm_shell_cwd: "/tmp"
+      with_dict: "{{ vESX }}"
+      async: 7200
+      poll: 0
+      register: hvlan
+    - name: Result check for setting VLAN
+      async_status:
+        jid: "{{ item.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      with_items: "{{ hvlan.results }}"
+      retries: 10
     - name: Set vmk0 ip addresses
       vmware_vm_shell:
         hostname: "{{ vc_mng.ip }}"
