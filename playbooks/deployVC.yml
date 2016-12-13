@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: False
   vars_files:
-    - answerfile.yml
+    - ../answerfile.yml
   tasks:
     - name: Create JSON template file
       template: src=vCSA_on_ESXi.json dest=/tmp/vCSA_on_ESXi.json

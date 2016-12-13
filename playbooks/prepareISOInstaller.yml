@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: True
   vars_files:
-    - answerfile.yml
+    - ../answerfile.yml
   tasks:
     - name: Ensure xorriso is intalled
       package:

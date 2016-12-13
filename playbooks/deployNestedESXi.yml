@@ -3,7 +3,7 @@
   hosts: localhost
   gather_facts: False
   vars_files:
-    - answerfile.yml
+    - ../answerfile.yml
   tasks:
     - name: Deploy Nested vESXi VMs
       nestedESXi:
