@@ -13,6 +13,6 @@
       pause: minutes=5
 
 - include: playbooks/configureNestedESXi.yml
-
+- include: playbooks/createVDS.yml
 
 
