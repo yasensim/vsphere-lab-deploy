@@ -19,12 +19,12 @@ This repository will be used to hold an Ansible Playbook to deploy and configure
 
 ### Dependencies
 
-apt-get install sshpass python-pip git
-pip install vim
-pip install pyvmomi
-git clone https://github.com/yasensim/vsphere-nsx-lab-deploy.git
+apt-get install sshpass python-pip git <br/>
+pip install vim <br/>
+pip install pyvmomi <br/>
+git clone https://github.com/yasensim/vsphere-nsx-lab-deploy.git <br/>
 
-Place the ESXi and VCSA ISOs in /root/ISOs
+Place the ESXi and VCSA ISOs in /root/ISOs <br/>
 
 
 ### Edit answersfile.yml
@@ -37,9 +37,9 @@ ansible-playbook *.yml
 
 
 ## Limitations
-Ansible => 2.2 is required
-ESXi version 6.0 and above is supported
-VCSA version 6.0U2 and above is supported
+Ansible => 2.2 is required <br/>
+ESXi version 6.0 and above is supported <br/>
+VCSA version 6.0U2 and above is supported <br/>
 
 ## Development
 

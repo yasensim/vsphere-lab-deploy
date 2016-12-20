@@ -1,7 +1,9 @@
+# path to the ESXi Installer ISO
 esxIso: '/root/ISOs/VMware-VMvisor-Installer-6.0.0.U2-3620759.x86_64.iso'
+# path to vCenter installer ISO
 vcIso: '/root/ISOs/VMware-VCSA-all-6.0.0.U2-3634788.iso'
 
-
+# configuration for accessing the existing physical ESXi
 physicalESX:
   host: '10.29.15.68' 
   user: 'root' 
@@ -9,25 +11,28 @@ physicalESX:
   vlan: 327
   vswitch: vSwitch0
 
+# the vCenter appliance that need to be deployed
 vcenter:
-  ip: '10.29.15.69' 
+  ip: '10.29.15.69' # vCenter ip address 
   mask: '27'
   gw: '10.29.15.65'
-  network: 'Infrastructure'
-  deployment: 'small'
-  name: '10.29.15.69'
+  network: 'Infrastructure' # this portGroup will be created on the pESX with the vlan id specified in the physicalESX section
+  name: '10.29.15.69' # FQDN if there is working DNS server, otherwise put the ip as a name
+  psc_name: '10.29.15.69' # if psc_name is the same as name above and psc_ip is the same as ip above, it will be vCenter with embeded PSC.
+  psc_ip: '10.29.15.69' # just change the name and ip address for the PSC if you want external PSC to be deployed.
   thin: 'true'
   user: 'administrator@vsphere.local' 
   password: 'VMware1!' 
   datacenter: 'MyDC1' 
-  datastore: 'Datastore1'
+  datastore: 'Datastore1' # Datastore name where the nested ESXi VMs will be deployed
   domain: 'vsphere.local'
+# if there is existing VC connected to the physical ESXi change the configuration here. If there is no existing VC the config must be the same as the vcenter section above
 vc_mng:
-  ip: '10.29.15.69' 
+  ip: '10.29.15.69' # if you have existing VC already deployed and connected to the physical ESX put the ip address here, otherwise it must be the same as the parameters in vcenter section above
   mask: '27'
   gw: '10.29.15.69'
   network: 'Infrastructure'
-  name: '10.29.15.69'
+  name: '10.29.15.69' # if you have existing VC already deployed and connected to the physical ESX put the existing VC VM name here, otherwise it must be the same as the parameters in vcenter section above
   user: 'administrator@vsphere.local' 
   password: 'VMware1!' 
   datacenter: 'MyDC1' 
@@ -38,37 +43,44 @@ dns1: '10.29.14.196'
 dns2: '8.8.8.8'
 domain: 'vmlab.com'
 
-clusters:
+clusters: # You can add, remove or rename clusters in this section, you can specify to which cluster specific nested ESXi to be connected to
   Management:
     ha: False
     drs: False
     vsan: False
   Edge:
-    ha: True
+    ha: False
     drs: True
-    vsan: True
+    vsan: False
   Compute:
     ha: True
     drs: True
     vsan: True
 
+# vMotion vlan and network, no need to be reachible, you can configure random values here
 vmotion_vlan: 1078
 vmotion_mask: 255.255.255.0
 vmotion_gw: 172.16.122.250
 
+# vSAN  vlan and network, no need to be reachible, you can configure random values here
+vsan_vlan: 1079
+vsan_mask: 255.255.255.0
+vsan_gw: 172.16.123.250
 
+# You can add, remove or rename the nested ESXi below, in this example the names will be esx1, esx2, etc ...
 vESX:
   esx1:
     ip: 10.29.15.71
     mask: 255.255.255.224
     gw: 10.29.15.65
-    mng_cluster: 'Management'
-    cluster: Compute
-    vlan: 327
-    cpu: 2
-    ram: 16384
-    hdd: 40
-    vmotion_ip: 172.16.122.1
+    mng_cluster: 'Management' # the cluster where physical ESXi is connected to. The nested VMs will be deployed here
+    cluster: Compute # the cluster where this specific nested ESXi need to be connected to
+    vlan: 327 # the external vlan id, need to have connectivity with the vCener
+    cpu: 2 # CPU count
+    ram: 16384 # memory
+    hdd: 40 # there is one HDD 8GB by default where the ESXi OS is installed. Additional one is SSD emulated drive configured half of the value here, and third HDD is according the value here
+    vmotion_ip: 172.16.122.1 
+    vsan_ip: 172.16.123.1
   esx2:
     ip: 10.29.15.72
     mask: 255.255.255.224
@@ -80,6 +92,7 @@ vESX:
     ram: 16384
     hdd: 40
     vmotion_ip: 172.16.122.2
+    vsan_ip: 172.16.123.2
   esx3:
     ip: 10.29.15.73
     mask: 255.255.255.224
@@ -91,6 +104,8 @@ vESX:
     ram: 16384
     hdd: 40
     vmotion_ip: 172.16.122.3
+    vsan_ip: 172.16.123.3
+
   esx4:
     ip: 10.29.15.74
     mask: 255.255.255.224
@@ -102,6 +117,8 @@ vESX:
     ram: 16384
     hdd: 40
     vmotion_ip: 172.16.122.4
+    vsan_ip: 172.16.123.4
+
   esx5:
     ip: 10.29.15.75
     mask: 255.255.255.224
@@ -113,6 +130,8 @@ vESX:
     ram: 16384
     hdd: 40
     vmotion_ip: 172.16.122.5
+    vsan_ip: 172.16.123.5
+
   esx6:
     ip: 10.29.15.76
     mask: 255.255.255.224
@@ -124,4 +143,5 @@ vESX:
     ram: 16384
     hdd: 40
     vmotion_ip: 172.16.122.6
+    vsan_ip: 172.16.123.6
  

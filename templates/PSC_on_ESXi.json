@@ -4,8 +4,8 @@
     "target.vcsa": {
         "appliance": {
             "deployment.network": "{{ vcenter.network }}",
-            "deployment.option": "small",
-            "name": "{{ vcenter.name }}",
+            "deployment.option": "infrastructure",
+            "name": "{{ vcenter.psc_name }}",
             "thin.disk.mode": "{{ vcenter.thin }}"
         },
         "esx": {
@@ -15,13 +15,13 @@
             "datastore": "{{ vcenter.datastore }}"
         },
         "network": {
-            "hostname": "{{ vcenter.name }}",
+            "hostname": "{{ vcenter.psc_name }}",
             "dns.servers": [
                 "{{ dns1 }}",
                 "{{ dns2 }}"
             ],
             "gateway": "{{ vcenter.gw }}",
-            "ip": "{{ vcenter.ip }}",
+            "ip": "{{ vcenter.psc_ip }}",
             "ip.family": "ipv4",
             "mode": "static",
             "prefix": "{{ vcenter.mask }}"

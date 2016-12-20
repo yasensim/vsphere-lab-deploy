@@ -160,14 +160,7 @@
       async: 7200
       poll: 0
       register: hdns
-    - name: Result check for setting a DNS Server
-      async_status:
-        jid: "{{ item.ansible_job_id }}"
-      register: job_result
-      until: job_result.finished
-      with_items: "{{ hdns.results }}"
-      retries: 10
-    - name: Enable vSAN on vmk0
+    - name: Disable SSH Warnings
       vmware_vm_shell:
         hostname: "{{ vc_mng.ip }}"
         username: "{{ vc_mng.user }}"
@@ -177,8 +170,8 @@
         vm_id: "{{ item.key }}"
         vm_username: root
         vm_password: VMware1!
-        vm_shell: /bin/esxcli
-        vm_shell_args: "vsan network ipv4 add -i vmk0"
+        vm_shell: /bin/vim-cmd
+        vm_shell_args: "hostsvc/advopt/update UserVars.SuppressShellWarning long 1"
         vm_shell_env: 
         - "PATH=/bin"
         - "VAR=test"
@@ -186,13 +179,13 @@
       with_dict: "{{ vESX }}"
       async: 7200
       poll: 0
-      register: hvsan
-    - name: Result check for enabling vSAN on vmk0
+      register: hwrn
+    - name: Result check for setting a DNS Server
       async_status:
         jid: "{{ item.ansible_job_id }}"
       register: job_result
       until: job_result.finished
-      with_items: "{{ hvsan.results }}"
+      with_items: "{{ hdns.results }}"
       retries: 10
     - name: Add ESXi Host to VCSA
       vmware_host:

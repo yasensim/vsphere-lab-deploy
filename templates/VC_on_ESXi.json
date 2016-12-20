@@ -1,10 +1,10 @@
 {
     "__version": "1.1",
-    "__comments": "vCenter Server with an embedded Platform Services Controller to an ESXi host.",
+    "__comments": "vCenter Server with an external Platform Services Controller to an ESXi host.",
     "target.vcsa": {
         "appliance": {
             "deployment.network": "{{ vcenter.network }}",
-            "deployment.option": "small",
+            "deployment.option": "management-small",
             "name": "{{ vcenter.name }}",
             "thin.disk.mode": "{{ vcenter.thin }}"
         },
@@ -28,6 +28,7 @@
         },
         "os": {
             "password": "{{ vcenter.password }}",
+            "platform.service.controller": "{{ vcenter.psc_name }}",
             "ssh.enable": true
         },
         "sso": {

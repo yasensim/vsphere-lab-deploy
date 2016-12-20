@@ -18,6 +18,19 @@
         subnet_mask: "{{ vmotion_mask }}"
         enable_vmotion: True
       with_dict: "{{ vESX }}"
+    - name: Create vSAN vmk2
+      vmware_vmkernel:
+        hostname: "{{ item.value.ip }}"
+        username: "root"
+        password: "VMware1!"
+        vswitch_name: "vSwitch0"
+        portgroup_name: "vsanvsspg"
+        vlan_id: "{{ vsan_vlan }}"
+        validate_certs: False
+        ip_address: "{{ item.value.vsan_ip }}"
+        subnet_mask: "{{ vsan_mask }}"
+        enable_vsan: True
+      with_dict: "{{ vESX }}"
     - name: Create Distributed Switch
       vmware_dvswitch:
         hostname: "{{ vcenter.ip }}"
@@ -26,7 +39,7 @@
         datacenter_name: "{{ vcenter.datacenter }}"
         validate_certs: false
         switch_name: "ComputeEdgeVDS"
-        mtu: 9000
+        mtu: 1600
         uplink_quantity: 2
         discovery_proto: lldp
         discovery_operation: both
@@ -58,7 +71,21 @@
         portgroup_type: earlyBinding
         state: present
       register: vmotion_pg
-    - name: Migrate uplink1 to the new VDS
+    - name: Create vSAN Portgroup
+      vmware_dvs_portgroup:
+        hostname: "{{ vcenter.ip }}"
+        username: "{{ vcenter.user }}"
+        password: "{{ vcenter.password }}"
+        validate_certs: false
+        portgroup_name: vSAN
+        switch_name: "ComputeEdgeVDS"
+        vlan_id: "{{ vmotion_vlan }}"
+        num_ports: 120
+        portgroup_type: earlyBinding
+        state: present
+      register: vsan_pg
+
+    - name: Migrate uplinks to the new VDS
       vmware_dvs_host:
         hostname: "{{ vcenter.ip }}"
         username: "{{ vcenter.user }}"
@@ -68,21 +95,22 @@
         switch_name: "ComputeEdgeVDS"
         vmnics:
           - vmnic1
+          - vmnic2
         state: present
       with_dict: "{{ vESX }}"
       register: vmnic0res
-    - name: Migrate vmk0 to the new VDS
+    - name: Migrate vmk2 to the new VDS
       vmware_migrate_vmk:
         hostname: "{{ vcenter.ip }}"
         username: "{{ vcenter.user }}"
         password: "{{ vcenter.password }}"
         validate_certs: false
         esxi_hostname: "{{ item.value.ip }}"
-        device: vmk0
+        device: vmk2
         current_switch_name: vSwitch0
-        current_portgroup_name: "Management Network"
+        current_portgroup_name: "vsanvsspg"
         migrate_switch_name: "ComputeEdgeVDS"
-        migrate_portgroup_name: Management
+        migrate_portgroup_name: vSAN
       with_dict: "{{ vESX }}"
       register: vmkmigrate
     - name: Migrate vmk1 to the new VDS
@@ -99,22 +127,33 @@
         migrate_portgroup_name: vMotion
       with_dict: "{{ vESX }}"
       register: vmkmigrate
-    - name: Migrate second uplinks to the new VDS
-      vmware_dvs_host:
-        hostname: "{{ vcenter.ip }}"
-        username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password }}"
-        validate_certs: false
-        esxi_hostname: "{{ item.value.ip }}"
-        switch_name: "ComputeEdgeVDS"
-        vmnics:
-          - vmnic1
-          - vmnic0
-        state: present
-      with_dict: "{{ vESX }}"
-      register: vmnicsres
-      ignore_errors: yes
-
+#    - name: Enable vSAN on vmk2
+#      vmware_vm_shell:
+#        hostname: "{{ vc_mng.ip }}"
+#        username: "{{ vc_mng.user }}"
+#        password: "{{ vc_mng.password }}"
+#        datacenter: "{{ vc_mng.datacenter }}"
+#        validate_certs: false
+#        vm_id: "{{ item.key }}"
+#        vm_username: root
+#        vm_password: VMware1!
+#        vm_shell: /bin/esxcli
+#        vm_shell_args: "vsan network ipv4 add -i vmk2"
+#        vm_shell_env:
+#        - "PATH=/bin"
+#        - "VAR=test"
+#        vm_shell_cwd: "/tmp"
+#      with_dict: "{{ vESX }}"
+#      async: 7200
+#      poll: 0
+#      register: hvsan
+#    - name: Result check for enabling vSAN on vmk2
+#      async_status:
+#        jid: "{{ item.ansible_job_id }}"
+#      register: job_result
+#      until: job_result.finished
+#      with_items: "{{ hvsan.results }}"
+#      retries: 10
 
 
 
