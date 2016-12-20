@@ -127,33 +127,12 @@
         migrate_portgroup_name: vMotion
       with_dict: "{{ vESX }}"
       register: vmkmigrate
-#    - name: Enable vSAN on vmk2
-#      vmware_vm_shell:
-#        hostname: "{{ vc_mng.ip }}"
-#        username: "{{ vc_mng.user }}"
-#        password: "{{ vc_mng.password }}"
-#        datacenter: "{{ vc_mng.datacenter }}"
-#        validate_certs: false
-#        vm_id: "{{ item.key }}"
-#        vm_username: root
-#        vm_password: VMware1!
-#        vm_shell: /bin/esxcli
-#        vm_shell_args: "vsan network ipv4 add -i vmk2"
-#        vm_shell_env:
-#        - "PATH=/bin"
-#        - "VAR=test"
-#        vm_shell_cwd: "/tmp"
-#      with_dict: "{{ vESX }}"
-#      async: 7200
-#      poll: 0
-#      register: hvsan
-#    - name: Result check for enabling vSAN on vmk2
-#      async_status:
-#        jid: "{{ item.ansible_job_id }}"
-#      register: job_result
-#      until: job_result.finished
-#      with_items: "{{ hvsan.results }}"
-#      retries: 10
-
-
+    - name: Claim disks for vSAN
+      claim_vsan_disks:
+        vcenter: "{{ vcenter.ip }}"
+        user: "{{ vcenter.user }}"
+        passwd: "{{ vcenter.password }}"
+        cluster: "{{ item.key }}"
+      when: "{{ item.value.vsan }} == True"
+      with_dict: "{{ clusters }}"
 

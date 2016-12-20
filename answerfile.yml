@@ -53,9 +53,9 @@ clusters: # You can add, remove or rename clusters in this section, you can spec
     drs: True
     vsan: False
   Compute:
-    ha: True
+    ha: False
     drs: True
-    vsan: True
+    vsan: False
 
 # vMotion vlan and network, no need to be reachible, you can configure random values here
 vmotion_vlan: 1078
@@ -80,7 +80,7 @@ vESX:
     ram: 16384 # memory
     hdd: 40 # there is one HDD 8GB by default where the ESXi OS is installed. Additional one is SSD emulated drive configured half of the value here, and third HDD is according the value here
     vmotion_ip: 172.16.122.1 
-    vsan_ip: 172.16.123.1
+    vsan_ip: 172.16.123.1 # even if you dont need vSAN put an IP address here otherwise the install will fail
   esx2:
     ip: 10.29.15.72
     mask: 255.255.255.224
