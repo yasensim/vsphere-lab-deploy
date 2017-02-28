@@ -198,6 +198,9 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
     nic0_spec = createNIC(content, portGroup, False)
     nic1_spec = createNIC(content, portGroup, False)
     nic2_spec = createNIC(content, portGroup, False)
+    nic3_spec = createNIC(content, portGroup, False)
+    nic4_spec = createNIC(content, portGroup, False)
+
     cdrom = createCdrom(content, datastore, dataStorePath)
     dev_changes.append(cdrom)
     dev_changes.append(scsi_spec)
@@ -207,6 +210,9 @@ def create_vm(vmName, content, clusterName, datastore, portGroup, CPUs, memory, 
     dev_changes.append(nic0_spec)
     dev_changes.append(nic1_spec)
     dev_changes.append(nic2_spec)
+    dev_changes.append(nic3_spec)
+    dev_changes.append(nic4_spec)
+
     config = vim.vm.ConfigSpec(
                               name=vmName,
                               memoryMB=memory,

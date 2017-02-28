@@ -7,42 +7,103 @@
   tasks:
     - name: Mount VC installer
       action: mount name='/mnt/VCSA' src="{{ vcIso }}" opts=loop fstype=iso9660 state=mounted
-    - name: Create JSON template file for external PSC
+
+    - name: Create JSON template file for external PSC 60
       template: 
         src=../templates/PSC_on_ESXi.json 
         dest=/tmp/PSC_on_ESXi.json 
-      when: vcenter.ip  !=  vcenter.psc_ip
+      when: 
+        - vcenter.ip  !=  vcenter.psc_ip
+        - vcIso | search("-6.0.")
       tags: psc
+
     - debug:
         msg: "Next step will take about 20 minutes if PSC has not been previously deployed, so go grab some coffee !!!"
-    - name: Perform VC CLI Install for PSC
-      deployVC:
-        pESX: "{{ physicalESX.host }}"
-        vmname: "{{ vcenter.name }}"
-        pESX_user: "{{ physicalESX.user }}"
-        pESX_passwd: "{{ physicalESX.password }}"
-        templ: "PSC_on_ESXi.json"
-      when: vcenter.ip  !=  vcenter.psc_ip
-    - name: Create JSON template file for embeded PSC
+
+    - name: Perform PCS CLI Install 60
+      command: "./vcsa-deploy --accept-eula --no-esx-ssl-verify /tmp/PSC_on_ESXi.json"
+      args:
+        chdir: /mnt/VCSA/vcsa-cli-installer/lin64/
+      when:
+        - vcenter.ip  !=  vcenter.psc_ip
+        - vcIso | search("-6.0.")
+      register: psc60deploy
+
+#    - name: Perform VC CLI Install for PSC 60
+#      deployVC:
+#        pESX: "{{ physicalESX.host }}"
+#        vmname: "{{ vcenter.name }}"
+#        pESX_user: "{{ physicalESX.user }}"
+#        pESX_passwd: "{{ physicalESX.password }}"
+#        templ: "PSC_on_ESXi.json"
+#      when: 
+#        - vcenter.ip  !=  vcenter.psc_ip
+#        - vcIso | search("-6.0.")
+
+    - name: Create JSON template file for VCSA 6.0 with embeded PSC
       template: 
         src=../templates/vCSA_on_ESXi.json 
         dest=/tmp/vCSA_on_ESXi.json
-      when: vcenter.ip  ==  vcenter.psc_ip
-    - name: Create JSON template file for external PSC
+      when: 
+        - vcenter.ip  ==  vcenter.psc_ip
+        - vcIso | search("-6.0.")
+
+    - name: Create JSON template file for VCSA 6.5 with embeded PSC
+      template: 
+        src=../templates/vCSA65_on_ESXi.json
+        dest=/tmp/vCSA_on_ESXi.json
+      when: 
+        - vcenter.ip  ==  vcenter.psc_ip
+        - vcIso | search("-6.5.")
+
+    - name: Create JSON template file for VC with external PSC 60
       template: 
         src=../templates/VC_on_ESXi.json
         dest=/tmp/vCSA_on_ESXi.json
-      when: vcenter.ip  !=  vcenter.psc_ip
+      when: 
+        - vcenter.ip  !=  vcenter.psc_ip
+        - vcIso | search("-6.0.")
+
     - debug:
         msg: "Next step will take about 20 minutes if VC has not been previously deployed, so go grab some coffee !!!"
-    - name: Perform VC CLI Install
-      deployVC:
-        pESX: "{{ physicalESX.host }}"
-        vmname: "{{ vcenter.name }}"
-        pESX_user: "{{ physicalESX.user }}"
-        pESX_passwd: "{{ physicalESX.password }}"
-        templ: "vCSA_on_ESXi.json"
-    - name: Unmount ESXi installer
+
+    - name: Perform VC CLI Install 60
+      command: "./vcsa-deploy --accept-eula --no-esx-ssl-verify /tmp/vCSA_on_ESXi.json"
+      args:
+        chdir: /mnt/VCSA/vcsa-cli-installer/lin64/
+      when: vcIso | search("-6.0.")
+      register: vc60deploy
+
+    - name: Perform VC CLI Install 65
+      command: "./vcsa-deploy install --accept-eula --no-esx-ssl-verify /tmp/vCSA_on_ESXi.json"
+      args:
+        chdir: /mnt/VCSA/vcsa-cli-installer/lin64/
+      when: vcIso | search("-6.5.")
+      register: vc65deploy
+
+#    - name: Perform VC CLI Install 60
+#      deployVC:
+#        pESX: "{{ physicalESX.host }}"
+#        vmname: "{{ vcenter.name }}"
+#        pESX_user: "{{ physicalESX.user }}"
+#        pESX_passwd: "{{ physicalESX.password }}"
+#        templ: "vCSA_on_ESXi.json"
+#        is65: False
+#      when: vcIso | search("-6.0.")
+
+
+#    - name: Perform VC CLI Install 65
+#      deployVC:
+#        pESX: "{{ physicalESX.host }}"
+#        vmname: "{{ vcenter.name }}"
+#        pESX_user: "{{ physicalESX.user }}"
+#        pESX_passwd: "{{ physicalESX.password }}"
+#        templ: "vCSA_on_ESXi.json"
+#        is65: True
+#      when: vcIso | search("-6.5.")
+
+
+    - name: Unmount VCSA installer
       action: mount name='/mnt/VCSA' src="{{ esxIso }}" fstype=iso9660 state=absent
     - name: Delete the temporary JSON template file
       file: path=/tmp/vCSA_on_ESXi.json state=absent

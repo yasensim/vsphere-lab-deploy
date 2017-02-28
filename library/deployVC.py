@@ -51,9 +51,12 @@ def connect_to_api(vchost, vc_user, vc_pwd):
         except Exception as e:
             raise Exception(e)
     return service_instance.RetrieveContent()
-def deployVC(templ):
+def deployVC(templ, is65):
     os.chdir("/mnt/VCSA/vcsa-cli-installer/lin64/")
-    return os.system("./vcsa-deploy --accept-eula --no-esx-ssl-verify /tmp/"+templ)
+    if is65:
+	return os.system("./vcsa-deploy install --accept-eula --no-esx-ssl-verify /tmp/"+templ+" 2> /dev/null")
+    else:
+	return os.system("./vcsa-deploy --accept-eula --no-esx-ssl-verify /tmp/"+templ)
 
 
 def main():
@@ -64,6 +67,7 @@ def main():
             pESX_user=dict(required=True, type='str'),
             pESX_passwd=dict(required=True, type='str', no_log=True),
 	    templ=dict(required=True, type='str'),
+	    is65=dict(required=True, type='bool'),
         ),
         supports_check_mode=True,
     )
@@ -80,7 +84,7 @@ def main():
     if module.check_mode:
         module.exit_json(changed=True, debug_out="Test Debug out, Yasen !!!")
 
-    result = deployVC(module.params['templ'])
+    result = deployVC(module.params['templ'], module.params['is65'])
     if result != 0:
         module.fail_json(msg='Failed to deploy vCenter with name {}'.format(module.params['vmname']))
     module.exit_json(changed=True, result=module.params['vmname'] + " created")

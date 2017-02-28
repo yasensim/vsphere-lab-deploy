@@ -17,6 +17,8 @@ This repository will be used to hold an Ansible Playbook to deploy and configure
 
 ## Setup
 
+Validated on Ubuntu 14 deploying vSphere 6.0 and vSphere 6.5
+
 ### Dependencies
 
 apt-get install sshpass python-pip git <br/>
@@ -33,7 +35,7 @@ Edit answersfile.yml according to your infrastructure!
 
 ## Usage
 
-ansible-playbook *.yml
+ansible-playbook deploy.yml
 
 
 ## Limitations
@@ -42,6 +44,6 @@ ESXi version 6.0 and above is supported <br/>
 VCSA version 6.0U2 and above is supported <br/>
 
 ## Development
-
+TODO: External PSC for vSphere 6.5
 VMware internal
 
