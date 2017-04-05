@@ -8,10 +8,12 @@
 - name: Wait 5 more minutes the vESXi hosts to become fully responsive
   hosts: localhost
   gather_facts: False
+  vars_files:
+    - ./answerfile.yml
   tasks:
     - name: Wait 5 minutes before start checking wheter the hosts are ready
       pause: minutes=5
-
+      when: "{{ vESX|length }} > 5"
 - include: playbooks/configureNestedESXi.yml
 - include: playbooks/createVDS.yml
 

@@ -127,6 +127,14 @@
         migrate_portgroup_name: vMotion
       with_dict: "{{ vESX }}"
       register: vmkmigrate
+    - name: Enable vSAN
+      enable_vsan:
+        vcenter: "{{ vcenter.ip }}"
+        user: "{{ vcenter.user }}"
+        passwd: "{{ vcenter.password }}"
+        cluster: "{{ item.key }}"
+      when: "{{ item.value.vsan }} == True"
+      with_dict: "{{ clusters }}"
     - name: Claim disks for vSAN
       claim_vsan_disks:
         vcenter: "{{ vcenter.ip }}"
@@ -135,4 +143,25 @@
         cluster: "{{ item.key }}"
       when: "{{ item.value.vsan }} == True"
       with_dict: "{{ clusters }}"
+    - name: Clear vSAN errors for unsupported hardware
+      clear_vsan_errors:
+        vcenter: "{{ vcenter.ip }}"
+        user: "{{ vcenter.user }}"
+        passwd: "{{ vcenter.password }}"
+    - name: Enable HA on the clusters
+      enable_ha:
+        vcenter: "{{ vcenter.ip }}"
+        user: "{{ vcenter.user }}"
+        passwd: "{{ vcenter.password }}"
+        cluster: "{{ item.key }}"
+      when: "{{ item.value.ha }} == True"
+      with_dict: "{{ clusters }}"
+    - name: Clear errors
+      clear_vsan_errors:
+        vcenter: "{{ vcenter.ip }}"
+        user: "{{ vcenter.user }}"
+        passwd: "{{ vcenter.password }}"
+
+
+
 

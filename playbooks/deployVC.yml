@@ -7,7 +7,7 @@
   tasks:
     - name: Mount VC installer
       action: mount name='/mnt/VCSA' src="{{ vcIso }}" opts=loop fstype=iso9660 state=mounted
-
+      tags: mount
     - name: Create JSON template file for external PSC 60
       template: 
         src=../templates/PSC_on_ESXi.json 
@@ -73,6 +73,7 @@
         chdir: /mnt/VCSA/vcsa-cli-installer/lin64/
       when: vcIso | search("-6.0.")
       register: vc60deploy
+      ignore_errors: True
 
     - name: Perform VC CLI Install 65
       command: "./vcsa-deploy install --accept-eula --no-esx-ssl-verify /tmp/vCSA_on_ESXi.json"
@@ -80,6 +81,8 @@
         chdir: /mnt/VCSA/vcsa-cli-installer/lin64/
       when: vcIso | search("-6.5.")
       register: vc65deploy
+      ignore_errors: True
+
 
 #    - name: Perform VC CLI Install 60
 #      deployVC:
@@ -123,9 +126,9 @@
         datacenter_name: "{{ vcenter.datacenter }}"
         cluster_name: "{{ item.key }}"
         validate_certs: False
-        enable_ha: "{{ item.value.ha }}"
+        enable_ha: False  # Hardcoded as we need to enable HA after vSAN is enabled and disks are claimed
         enable_drs: "{{ item.value.drs }}"
-        enable_vsan: "{{ item.value.vsan }}"
+        enable_vsan: False  # Hardcoded as we need to enable vSAN when the hosts are added to the cluster
       with_dict: "{{ clusters }}"
 
 
