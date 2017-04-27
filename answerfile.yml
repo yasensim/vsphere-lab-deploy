@@ -1,9 +1,9 @@
 # path to the ESXi Installer ISO
-#esxIso: '/root/ISOs/VMware-VMvisor-Installer-6.0.0.U2-3620759.x86_64.iso'
-esxIso: '/root/ISOs/VMware-VMvisor-Installer-6.5.0-4887370.x86_64.iso'
+esxIso: '/root/ISOs/VMware-VMvisor-Installer-6.0.0.U2-3620759.x86_64.iso'
+#esxIso: '/root/ISOs/VMware-VMvisor-Installer-6.5.0-4887370.x86_64.iso'
 # path to vCenter installer ISO
-#vcIso: '/root/ISOs/VMware-VCSA-all-6.0.0.U2-3634788.iso'
-vcIso: '/root/ISOs/VMware-VCSA-all-6.5.0-5178943.iso'
+vcIso: '/root/ISOs/VMware-VCSA-all-6.0.0.U2-3634788.iso'
+#vcIso: '/root/ISOs/VMware-VCSA-all-6.5.0-5178943.iso'
 
 
 

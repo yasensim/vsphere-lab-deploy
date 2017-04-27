@@ -133,7 +133,7 @@
         user: "{{ vcenter.user }}"
         passwd: "{{ vcenter.password }}"
         cluster: "{{ item.key }}"
-      when: "{{ item.value.vsan }} == True"
+      when: item.value.vsan == True
       with_dict: "{{ clusters }}"
     - name: Claim disks for vSAN
       claim_vsan_disks:
@@ -141,7 +141,7 @@
         user: "{{ vcenter.user }}"
         passwd: "{{ vcenter.password }}"
         cluster: "{{ item.key }}"
-      when: "{{ item.value.vsan }} == True"
+      when: item.value.vsan == True
       with_dict: "{{ clusters }}"
     - name: Clear vSAN errors for unsupported hardware
       clear_vsan_errors:
@@ -154,8 +154,10 @@
         user: "{{ vcenter.user }}"
         passwd: "{{ vcenter.password }}"
         cluster: "{{ item.key }}"
-      when: "{{ item.value.ha }} == True"
+      when: item.value.ha == True
       with_dict: "{{ clusters }}"
+    - name: Wait 3 minutes before clearing the errors
+      pause: minutes=3
     - name: Clear errors
       clear_vsan_errors:
         vcenter: "{{ vcenter.ip }}"
