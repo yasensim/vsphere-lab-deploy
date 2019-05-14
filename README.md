@@ -22,7 +22,7 @@ Validated on Ubuntu 14 deploying vSphere 6.0 and vSphere 6.5
 ### Dependencies
 
 apt-get install sshpass python-pip git <br/>
-pip install vim <br/>
+pip install pyvim <br/>
 pip install pyvmomi <br/>
 git clone https://github.com/yasensim/vsphere-nsx-lab-deploy.git <br/>
 
