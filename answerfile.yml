@@ -78,8 +78,8 @@ vESX:
     mng_cluster: 'Management' # the cluster where physical ESXi is connected to. The nested VMs will be deployed here
     cluster: Compute # the cluster where this specific nested ESXi need to be connected to
     vlan: 48 # the external vlan id, need to have connectivity with the vCener
-    cpu: 4 # CPU count
-    ram: 32768 # memory
+    cpu: 8 # CPU count
+    ram: 65536 # memory
     hdd: 180 # there is one HDD 8GB by default where the ESXi OS is installed. Additional one is SSD emulated drive configured half of the value here, and third HDD is according the value here
     vmotion_ip: 172.16.122.1 
     vsan_ip: 172.16.123.1 # even if you dont need vSAN put an IP address here otherwise the install will fail
@@ -90,8 +90,32 @@ vESX:
     mng_cluster: 'Management' # the cluster where physical ESXi is connected to. The nested VMs will be deployed here
     cluster: Compute # the cluster where this specific nested ESXi need to be connected to
     vlan: 48 # the external vlan id, need to have connectivity with the vCener
-    cpu: 4 # CPU count
-    ram: 32768 # memory
+    cpu: 8 # CPU count
+    ram: 65536 # memory
     hdd: 180 # there is one HDD 8GB by default where the ESXi OS is installed. Additional one is SSD emulated drive configured half of the value here, and third HDD is according the value here
     vmotion_ip: 172.16.122.2 
     vsan_ip: 172.16.123.2 # even if you dont need vSAN put an IP address here otherwise the install will fail
+  esxi3:
+    ip: 10.114.209.233
+    mask: 255.255.255.224
+    gw: 10.114.209.225
+    mng_cluster: 'Management' # the cluster where physical ESXi is connected to. The nested VMs will be deployed here
+    cluster: Compute # the cluster where this specific nested ESXi need to be connected to
+    vlan: 48 # the external vlan id, need to have connectivity with the vCener
+    cpu: 8 # CPU count
+    ram: 65536 # memory
+    hdd: 180 # there is one HDD 8GB by default where the ESXi OS is installed. Additional one is SSD emulated drive configured half of the value here, and third HDD is according the value here
+    vmotion_ip: 172.16.122.3
+    vsan_ip: 172.16.123.3 # even if you dont need vSAN put an IP address here otherwise the install will fail
+  esxi4:
+    ip: 10.114.209.234
+    mask: 255.255.255.224
+    gw: 10.114.209.225
+    mng_cluster: 'Management' # the cluster where physical ESXi is connected to. The nested VMs will be deployed here
+    cluster: Compute # the cluster where this specific nested ESXi need to be connected to
+    vlan: 48 # the external vlan id, need to have connectivity with the vCener
+    cpu: 8 # CPU count
+    ram: 65536 # memory
+    hdd: 180 # there is one HDD 8GB by default where the ESXi OS is installed. Additional one is SSD emulated drive configured half of the value here, and third HDD is according the value here
+    vmotion_ip: 172.16.122.4 
+    vsan_ip: 172.16.123.4 # even if you dont need vSAN put an IP address here otherwise the install will fail
