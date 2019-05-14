@@ -5,6 +5,40 @@
   vars_files:
     - ../answerfile.yml
   tasks:
+    - name: Create vMotion vmk1
+      vmware_vmkernel:
+        hostname: "{{ item.value.ip }}"
+        esxi_hostname: "{{ item.value.ip }}"
+        username: "root"
+        password: "VMware1!"
+        state: present
+        vswitch_name: "vSwitch0"
+        portgroup_name: "vmotion"
+        vlan_id: "{{ vmotion_vlan }}"
+        validate_certs: False
+        network:
+          type: 'static'
+          ip_address: "{{ item.value.vmotion_ip }}"
+          subnet_mask: "{{ vmotion_mask }}"
+        enable_vmotion: True
+      with_dict: "{{ vESX }}"
+    - name: Create vSAN vmk2
+      vmware_vmkernel:
+        hostname: "{{ item.value.ip }}"
+        esxi_hostname: "{{ item.value.ip }}"
+        username: "root"
+        password: "VMware1!"
+        state: present
+        vswitch_name: "vSwitch0"
+        portgroup_name: "vsanvsspg"
+        vlan_id: "{{ vsan_vlan }}"
+        validate_certs: False
+        network:
+          type: 'static'
+          ip_address: "{{ item.value.vsan_ip }}"
+          subnet_mask: "{{ vsan_mask }}"
+        enable_vsan: True
+      with_dict: "{{ vESX }}"
     - name: Create Distributed Switch
       vmware_dvswitch:
         hostname: "{{ vcenter.ip }}"
@@ -13,7 +47,7 @@
         datacenter_name: "{{ vcenter.datacenter }}"
         validate_certs: false
         switch_name: "ComputeEdgeVDS"
-        mtu: 1700
+        mtu: 1600
         uplink_quantity: 2
         discovery_proto: lldp
         discovery_operation: both
@@ -73,43 +107,34 @@
         state: present
       with_dict: "{{ vESX }}"
       register: vmnic0res
-
-    - name: Create vMotion vmk1
-      vmware_vmkernel:
+    - name: Migrate vmk2 to the new VDS
+      vmware_migrate_vmk:
         hostname: "{{ vcenter.ip }}"
-        esxi_hostname: "{{ item.value.ip }}"
         username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password}}"
-        state: present
-        portgroup_name: vMotion
-        dvswitch_name: "ComputeEdgeVDS"
-        validate_certs: False
-        enable_vmotion: true
-        network:
-          type: 'static'
-          ip_address: "{{ item.value.vmotion_ip }}"
-          subnet_mask: "{{ vmotion_mask }}"
-        enable_vmotion: True
+        password: "{{ vcenter.password }}"
+        validate_certs: false
+        esxi_hostname: "{{ item.value.ip }}"
+        device: vmk2
+        current_switch_name: vSwitch0
+        current_portgroup_name: "vsanvsspg"
+        migrate_switch_name: "ComputeEdgeVDS"
+        migrate_portgroup_name: vSAN
       with_dict: "{{ vESX }}"
-
-    - name: Create vSAN vmk2
-      vmware_vmkernel:
+      register: vmkmigrate
+    - name: Migrate vmk1 to the new VDS
+      vmware_migrate_vmk:
         hostname: "{{ vcenter.ip }}"
-        esxi_hostname: "{{ item.value.ip }}"
         username: "{{ vcenter.user }}"
-        password: "{{ vcenter.password}}"
-        state: present
-        enable_vsan: true
-        portgroup_name: vSAN
-        dvswitch_name: "ComputeEdgeVDS"
-        validate_certs: False
-        network:
-          type: 'static'
-          ip_address: "{{ item.value.vsan_ip }}"
-          subnet_mask: "{{ vsan_mask }}"
-        enable_vsan: True
+        password: "{{ vcenter.password }}"
+        validate_certs: false
+        esxi_hostname: "{{ item.value.ip }}"
+        device: vmk1
+        current_switch_name: vSwitch0
+        current_portgroup_name: "vmotion"
+        migrate_switch_name: "ComputeEdgeVDS"
+        migrate_portgroup_name: vMotion
       with_dict: "{{ vESX }}"
-
+      register: vmkmigrate
     - name: Enable vSAN
       enable_vsan:
         vcenter: "{{ vcenter.ip }}"

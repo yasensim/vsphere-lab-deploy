@@ -17,7 +17,8 @@ This repository will be used to hold an Ansible Playbook to deploy and configure
 
 ## Setup
 
-Validated on Ubuntu 14 deploying vSphere 6.0 and vSphere 6.5
+master branch is updated for vSphere 6.7.
+for olther versions see pre-67 branch!
 
 ### Dependencies
 
@@ -39,9 +40,9 @@ ansible-playbook deploy.yml
 
 
 ## Limitations
-Ansible => 2.2 is required <br/>
-ESXi version 6.0 and above is supported <br/>
-VCSA version 6.0U2 and above is supported <br/>
+Ansible => 2.7 is required <br/>
+ESXi version 6.7 and above is supported <br/>
+VCSA version 6.7 and above is supported <br/>
 
 ## Development
 TODO: External PSC for vSphere 6.5

@@ -1,43 +1,43 @@
 {
-    "__version": "2.3.0",
+    "__version": "2.13.0",
     "__comments": "Sample template to deploy a vCenter Server Appliance with an embedded Platform Services Controller on an ESXi host.",
-    "new.vcsa": {
+    "new_vcsa": {
         "esxi": {
             "hostname": "{{ physicalESX.host }}",
             "username": "{{ physicalESX.user }}",
             "password": "{{ physicalESX.password }}",
-            "deployment.network": "{{ vcenter.network }}",
+            "deployment_network": "{{ vcenter.network }}",
             "datastore": "{{ vcenter.datastore }}"
         },
         "appliance": {
-            "thin.disk.mode": true,
-            "deployment.option": "small",
+            "__comments": [
+                "You must provide the 'deployment_option' key with a value, which will affect the VCSA's configuration parameters, such as the VCSA's number of vCPUs, the memory size, the storage size, and the maximum numbers of ESXi hosts and VMs which can be managed. For a list of acceptable values, run the supported deployment sizes help, i.e. vcsa-deploy --supported-deployment-sizes"
+            ],
+            "thin_disk_mode": true,
+            "deployment_option": "small",
             "name": "{{ vcenter.name }}"
         },
         "network": {
-            "ip": "{{ vcenter.ip }}",
-            "ip.family": "ipv4",
+            "ip_family": "ipv4",
             "mode": "static",
-            "dns.servers": [
+            "ip": "{{ vcenter.ip }}",
+            "dns_servers": [
                 "{{ dns1 }}",
-                "{{ dns2 }}"
+		"{{ dns2 }}"
             ],
-            "system.name": "{{ vcenter.name }}",
+            "system_name": "{{ vcenter.name }}",
             "gateway": "{{ vcenter.gw }}",
             "prefix": "{{ vcenter.mask }}"
-
-
         },
         "os": {
-            "password": "{{ vcenter.password }}",
-            "ssh.enable": true
+            "password": "{{ vcenter.password}}",
+            "ntp_servers": "{{ ntp_server }}",
+            "ssh_enable": true
         },
         "sso": {
             "password": "{{ vcenter.password }}",
-            "domain-name": "{{ vcenter.domain }}",
-            "site-name": "site1"
+            "domain_name": "{{ vcenter.domain }}"
         }
-
     },
     "ceip": {
         "description": {
@@ -59,7 +59,7 @@
                 "http://www.vmware.com/trustvmware/ceip.html . If you ",
                 "prefer not to participate in VMware's CEIP for this ",
                 "product, you should disable CEIP by setting ",
-                "'ceip.enabled': false. You may join or leave VMware's ",
+                "'ceip_enabled': false. You may join or leave VMware's ",
                 "CEIP for this product at any time. Please confirm your ",
                 "acknowledgement by passing in the parameter ",
                 "--acknowledge-ceip in the command line.",
@@ -67,7 +67,7 @@
             ]
         },
         "settings": {
-            "ceip.enabled": false
+            "ceip_enabled": true
         }
     }
 }

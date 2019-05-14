@@ -8,6 +8,7 @@
     - name: Create Infrastructure portgroup
       vmware_portgroup:
         hostname: "{{ physicalESX.host }}"
+        esxi_hostname: "{{ physicalESX.host }}"
         username: "{{ physicalESX.user }}"
         password: "{{ physicalESX.password }}"
         switch_name: "{{ physicalESX.vswitch }}"
@@ -20,6 +21,7 @@
     - name: Create Infrastructure portgroup
       vmware_portgroup:
         hostname: "{{ physicalESX.host }}"
+        esxi_hostname: "{{ physicalESX.host }}"
         username: "{{ physicalESX.user }}"
         password: "{{ physicalESX.password }}"
         switch_name: "{{ physicalESX.vswitch }}"

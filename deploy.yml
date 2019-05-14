@@ -1,9 +1,9 @@
 ---
-- include: playbooks/preparePhysicalESXi.yml
-- include: playbooks/deployVC.yml
-- include: playbooks/connectPESXtoVC.yml
-- include: playbooks/prepareISOInstaller.yml
-- include: playbooks/deployNestedESXi.yml
+- import_playbook: playbooks/preparePhysicalESXi.yml
+- import_playbook: playbooks/deployVC.yml
+- import_playbook: playbooks/connectPESXtoVC.yml
+- import_playbook: playbooks/prepareISOInstaller.yml
+- import_playbook: playbooks/deployNestedESXi.yml
 
 - name: Wait 5 more minutes the vESXi hosts to become fully responsive
   hosts: localhost
@@ -14,7 +14,7 @@
     - name: Wait 5 minutes before start checking wheter the hosts are ready
       pause: minutes=5
       when: vESX|length > 5
-- include: playbooks/configureNestedESXi.yml
-- include: playbooks/createVDS.yml
+- import_playbook: playbooks/configureNestedESXi.yml
+- import_playbook: playbooks/createVDS.yml
 
 
