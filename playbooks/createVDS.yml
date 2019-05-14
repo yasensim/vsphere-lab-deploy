@@ -89,7 +89,6 @@
           type: 'static'
           ip_address: "{{ item.value.vmotion_ip }}"
           subnet_mask: "{{ vmotion_mask }}"
-        enable_vmotion: True
       with_dict: "{{ vESX }}"
 
     - name: Create vSAN vmk2
@@ -107,7 +106,6 @@
           type: 'static'
           ip_address: "{{ item.value.vsan_ip }}"
           subnet_mask: "{{ vsan_mask }}"
-        enable_vsan: True
       with_dict: "{{ vESX }}"
 
     - name: Enable vSAN
